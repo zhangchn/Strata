@@ -7,7 +7,11 @@
 # CUDA targets arrive in Phase 2.  The kernels need sm_80 or newer (tf32 mma, bf16 math) and the guard
 # below refuses anything older: silently building for a pre-Ampere arch would produce a binary that runs
 # and is wrong about its own performance, which is the worst of both outcomes.
-cmake_minimum_required(VERSION 3.24)
+cmake_minimum_required(VERSION 3.22)
+if(CMAKE_VERSION VERSION_LESS "3.24.0")
+  set(CMAKE_CUDA20_STANDARD_COMPILE_OPTION "")
+  set(CMAKE_CUDA_FLAGS "${CMAKE_CUDA_FLAGS} -std=c++20")
+endif()
 project(strata VERSION 0.1.43 LANGUAGES CXX)
 # EXPERIMENTAL: the Intel Arc engine, the SYCL port in sycl/ (PR #423; icpx + oneMKL, docs/INTEL_ARC.md). It is its
 # own project that takes the unported sources from src/; with this on, nothing below is configured.
